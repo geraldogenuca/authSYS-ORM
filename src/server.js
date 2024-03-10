@@ -6,10 +6,10 @@ const express = require('express')
 , morgan = require('morgan')
 
 //
-require('./database')
+require('./database/index')
 
 // routes import
-
+const UsersRoutes = require('./routes/users.routes')
 
 
 // LIBS resource initialization
@@ -20,6 +20,8 @@ app.use(morgan('dev'))
 
 
 // get ROUTES to project
+app.use('/', UsersRoutes)
+
 
 // Server project
 app.listen(

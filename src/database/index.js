@@ -1,16 +1,16 @@
 require('dotenv').config()
 
 const Sequelize = require('sequelize')
-const db_config = require('../config/db_config')
+, db_config = require('../config/db_config')
 
 //
+, Users = require('./models/UsersModels')
 
-
-const connection_db = new Sequelize(db_config)
+, connection_db = new Sequelize(db_config)
 
 
 //
-
+Users.init(connection_db)
 
 
 module.exports = connection_db
