@@ -1,17 +1,20 @@
 const express = require('express')
+//
+, checkLogin = require('../middlewares/checkLogin')
 
 //
-const UsersControllers = require('../controllers/users-controllers')
+, UsersControllers = require('../controllers/users-controllers')
 
 
 //
-const routes = express.Router()
+, routes = express.Router()
 
 //
-routes.post('/users/register', UsersControllers.createUser)
-routes.post('/users/login', UsersControllers.loginUser)
-routes.get('/users', UsersControllers.indexUser)
-
+routes
+    .post('/users/register', UsersControllers.createUser)
+    .post('/users/login', UsersControllers.loginUser)
+    .get('/users', UsersControllers.indexUser)
+    .delete('/users/delete/:id_user', checkLogin.required, UsersControllers.deleteUsers)
 
 
 module.exports = routes

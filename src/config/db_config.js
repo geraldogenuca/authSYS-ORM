@@ -9,3 +9,5 @@ module.exports = {
   dialect: 'mysql',
   timezone: '-03:00', /* Time zone Brazil. */
 }
+
+console.log('database connected!')

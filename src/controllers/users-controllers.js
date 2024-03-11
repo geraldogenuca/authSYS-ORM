@@ -24,11 +24,11 @@ module.exports = {
         // Validating existing user.
         const userExist = await Users.findOne({ where:{ email: email } })
         if (userExist) 
-            return res.status(422).json({ msg: 'Existe ja'})        
+            return res.status(422).json({ message: 'User already exits!'})        
 
         //
         const passwordHash = await bcrypt.hash(req.body.password, 10)
-        const users = new Users({ name_user, email, password: passwordHash })
+        , users = new Users({ name_user, email, password: passwordHash })
 
         try {            
             await users.save()
@@ -63,25 +63,25 @@ module.exports = {
             return res.status(422).json({ message: "Password is required!" })   
 
         // Check if user exists.
-        const user = await Users.findOne({ where: { email: email } });
+        const user = await Users.findOne({ where: { email: email } })
 
         if (!user) {
-            return res.status(404).json({ msg: "User not found!" });
+            return res.status(404).json({ message: "User not found!" })
         }
 
         // Check password is valid.
-        const checkPassword = await bcrypt.compare(password, user.password);
+        const checkPassword = await bcrypt.compare(password, user.password)
 
         if (!checkPassword) {
-            return res.status(422).json({ msg: "Password invalid!" });
+            return res.status(422).json({ message: "Password invalid!" })
         }
 
         try {
             const secret = process.env.SECRET_JWT
 
-            const token = jwt.sign( { id: user.id_user }, secret )
+            , token = jwt.sign( { id: user.id_user }, secret )
 
-            res.status(200).json({ message: "Autentic successfully!", token })
+            res.status(200).json({ message: "Authenticate successfully!", token })
         } catch (error) {
             res.status(500).json({ message: error })
         }
@@ -111,5 +111,26 @@ module.exports = {
             res.status(500).json({ error: error })
         }        
     },
-    
+    async deleteUsers(req, res, next) {
+        try {
+            const id = req.params.id_user
+
+            , user = await Users.destroy({ where: { id } })
+
+            if (!user) 
+                return res.status(400).json({ error: 'User not found' })
+
+            const response = {
+                message: `User id: ${req.params.id_user}, removed successfully!`,
+                request: {
+                    type: 'DELETE',
+                    description: 'Removed product!',
+                    url: process.env.API_URL + 'product/' + req.params.id_user
+                }
+            }
+            res.status(202).json(response)
+        } catch (error) {
+            res.status(500).send({ error: error })
+        }
+    }
 }
